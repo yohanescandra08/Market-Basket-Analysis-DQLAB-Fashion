@@ -30,6 +30,7 @@ dqlab.trans.freq <-
   )
 View(dqlab.trans.freq)
 write.csv(dqlab.trans.freq, file = "Transaction Frequency.txt")
+
 # * 3.1. Top 10 -----------------------------------------------------------
 dqlab.trans.freq.top.10 <-
   dqlab.trans.freq %>% 
@@ -40,7 +41,7 @@ dqlab.trans.freq.top.10$Product_Name <-
          levels = dqlab.trans.freq.top.10$Product_Name)
 View(dqlab.trans.freq.top.10)
 write.csv(dqlab.trans.freq.top.10, file = "Top 10 Transaction.txt")
-# * * 5.1.1. Visualization ------------------------------------------------
+# * * 3.1.1. Visualization ------------------------------------------------
 color.1 <- brewer.pal(n = 9, name = "Greens")
 dqlab.trans.freq.top.10.plot <-
   plot_ly(dqlab.trans.freq.top.10) %>%
@@ -62,16 +63,17 @@ dqlab.trans.freq.top.10.plot <-
   )
 dqlab.trans.freq.top.10.plot
 
-# * 5.2. Bottom 10 --------------------------------------------------------
+# * 3.2. Bottom 10 --------------------------------------------------------
 dqlab.trans.freq.bottom.10 <-
   dqlab.trans.freq %>% 
-  tail(10)
+  tail(10) %>% 
+  arrange(Total)
 dqlab.trans.freq.bottom.10$Product_Name <-
   factor(dqlab.trans.freq.bottom.10$Product_Name,
          levels = dqlab.trans.freq.bottom.10$Product_Name)
 View(dqlab.trans.freq.bottom.10)
-# * * 5.2.1. Visualization ------------------------------------------------
-color.2 <- brewer.pal(n = 9, name = "Reds")
+# * * 3.2.1. Visualization ------------------------------------------------
+color.2 <- rev(brewer.pal(n = 9, name = "Reds"))
 dqlab.trans.freq.bottom.10.plot <-
   plot_ly(dqlab.trans.freq.bottom.10) %>%
   add_trace(
@@ -93,7 +95,7 @@ dqlab.trans.freq.bottom.10.plot <-
 dqlab.trans.freq.bottom.10.plot
 
 
-  # 6. Product Combination Based on Filter ----------------------------------
+# 4. Product Combination Based on Filter ----------------------------------
 dqlab.trans.combi <-
   apriori(dqlab.trans,
           parameter = list(
@@ -106,12 +108,13 @@ dqlab.trans.combi <-
   c(head(sort(dqlab.trans.combi, by = "lift"), n = 10))
 inspect(dqlab.trans.combi)
 write(dqlab.trans.combi, file = "dqlab.transaction.combination.top.10.txt")
+# * 4.1. Visualization ----------------------------------------------------
 dqlab.trans.combi.plot <-
   plot(dqlab.trans.combi, method = "graph", engine = "html")
 dqlab.trans.combi.plot
 
 
-# 7. Product Combination Based on Slow Moving Item ------------------------
+# 5. Product Combination Based on Slow Moving Item ------------------------
 dqlab.trans.combi.slow.item <-
   apriori(dqlab.trans,
           parameter = list(
@@ -136,6 +139,7 @@ dqlab.trans.combi.slow.item <-
   )[c(1:3)])
 inspect(dqlab.trans.combi.slow.item)
 write(dqlab.trans.combi.slow.item, file = "dqlab.transaction.combination.slow.move.item.txt")
+# * 5.1. Visualization ----------------------------------------------------
 dqlab.trans.combi.slow.item.plot <-
   plot(dqlab.trans.combi.slow.item,
        method = "graph",
