@@ -3,6 +3,7 @@ library(tidyverse)
 library(arules)
 library(arulesViz)
 library(plotly)
+library(RColorBrewer)
 
 
 # 2. Main Data Frame ------------------------------------------------------
@@ -14,7 +15,7 @@ dqlab.trans.1 <-
     cols = c(1, 2),
     skip = 1
   )
-print(dqlab.trans)
+print(dqlab.trans.1)
 dqlab.trans.2 <-
   itemFrequency(dqlab.trans.1, type = "absolute")
 
@@ -97,7 +98,7 @@ dqlab.trans.freq.bottom.10.plot
 
 
 # 4. Product Combination Based on Filter ----------------------------------
-dqlab.trans.combi.1 <-
+dqlab.trans.combi <-
   apriori(dqlab.trans.1,
           parameter = list(
             supp = 10 / length(dqlab.trans.1),
@@ -105,20 +106,55 @@ dqlab.trans.combi.1 <-
             minlen = 2,
             maxlen = 3
           ))
-dqlab.trans.combi.1 <-
-  c(head(sort(dqlab.trans.combi.1, by = "lift"), n = 10))
-dqlab.trans.combi.2 <-
-  DATAFRAME(dqlab.trans.combi.1)
-View(dqlab.trans.combi.2)
-write.csv(dqlab.trans.combi.2, file = "Top 10 Product Combination Based on Filter.txt")
+dqlab.trans.combi <-
+  c(head(sort(dqlab.trans.combi, by = "lift"), n = 10))
+dqlab.trans.combi <-
+  DATAFRAME(dqlab.trans.combi)
+View(dqlab.trans.combi)
+write.csv(dqlab.trans.combi, file = "Top 10 Product Combination Based on Filter.txt")
 # * 4.1. Visualization ----------------------------------------------------
+dqlab.trans.combi <- 
+  dqlab.trans.combi[,c(1,2,6)]
+dqlab.trans.combi$rule <- 
+  paste("Rule", 1:10)
 dqlab.trans.combi.plot <-
-  plot(dqlab.trans.combi.1, method = "graph", engine = "html")
+  ggplotly(
+    ggplot(dqlab.trans.combi,
+           aes(
+             x = str_wrap(LHS, 20),
+             y = str_wrap(RHS, 15),
+             fill = lift,
+             text = paste("LHS: ", LHS, "<br>",
+                          "RHS: ", RHS, "<br>",
+                          "Lift: ", lift, "<br>")
+           )) +
+      geom_tile() +
+      geom_text(aes(label = rule),
+                position = position_stack(vjust = 1),
+                vjust = 0.5) +
+      scale_fill_distiller(
+        type = "seq",
+        palette = "YlOrRd",
+        direction = 1
+      ) +
+      labs(
+        title = "Top 10 Product Combination",
+        subtitle = "Based on Filters",
+        x = "LHS",
+        y = "RHS"
+      ) +
+      theme(
+        legend.position = "none",
+        axis.text.x = element_text(angle = 45)
+      )
+    ,
+    tooltip = c("text")
+  )
 dqlab.trans.combi.plot
 
 
 # 5. Product Combination Based on Slow Moving Item ------------------------
-dqlab.trans.combi.slow.item.1 <-
+dqlab.trans.combi.slow.item <-
   apriori(dqlab.trans.1,
           parameter = list(
             supp = 10 / length(dqlab.trans.1),
@@ -126,27 +162,63 @@ dqlab.trans.combi.slow.item.1 <-
             minlen = 2,
             maxlen = 3
           ))
-dqlab.trans.combi.slow.item.1 <-
+dqlab.trans.combi.slow.item <-
   c(sort(
-    subset(dqlab.trans.combi.slow.item.1, rhs %in% "Tas Makeup"),
+    subset(dqlab.trans.combi.slow.item, rhs %in% "Tas Makeup"),
     by = "lift",
     decreasing = T
   )[c(1:3)],
   sort(
     subset(
-      dqlab.trans.combi.slow.item.1,
+      dqlab.trans.combi.slow.item,
       rhs %in% "Baju Renang Pria Anak-anak"
     ),
     by = "lift",
     decreasing = T
   )[c(1:3)])
-dqlab.trans.combi.slow.item.2 <-
-  DATAFRAME(dqlab.trans.combi.slow.item.1)
-View(dqlab.trans.combi.slow.item.2)
-write.csv(dqlab.trans.combi.slow.item.2, file = "Product Combination on Slow Moving Item.txt")
+dqlab.trans.combi.slow.item <-
+  DATAFRAME(dqlab.trans.combi.slow.item)
+View(dqlab.trans.combi.slow.item)
+write.csv(dqlab.trans.combi.slow.item, file = "Product Combination on Slow Moving Item.txt")
 # * 5.1. Visualization ----------------------------------------------------
-dqlab.trans.combi.slow.item.1.plot <-
-  plot(dqlab.trans.combi.slow.item.1,
-       method = "graph",
-       engine = "html")
-dqlab.trans.combi.slow.item.1.plot
+dqlab.trans.combi.slow.item <- 
+  dqlab.trans.combi.slow.item[,c(1,2,6)]
+dqlab.trans.combi.slow.item <- 
+  dqlab.trans.combi.slow.item %>% 
+  arrange(desc(lift))
+dqlab.trans.combi.slow.item$rule <- 
+  paste("Rule", 1:6)
+dqlab.trans.combi.slow.item.plot <-
+  ggplotly(
+    ggplot(dqlab.trans.combi.slow.item,
+           aes(
+             x = str_wrap(LHS, 20),
+             y = str_wrap(RHS, 15),
+             fill = lift,
+             text = paste("LHS: ", LHS, "<br>",
+                          "RHS: ", RHS, "<br>",
+                          "Lift: ", lift, "<br>")
+           )) +
+      geom_tile() +
+      geom_text(aes(label = rule),
+                position = position_stack(vjust = 1),
+                vjust = 0.5) +
+      scale_fill_distiller(
+        type = "seq",
+        palette = "YlOrRd",
+        direction = 1
+      ) +
+      labs(
+        title = "Products Bundles on Slow Move Item",
+        x = "LHS",
+        y = "RHS"
+      ) +
+      theme(
+        legend.position = "none",
+        axis.text.x = element_text(angle = 45)
+      )
+    ,
+    tooltip = c("text")
+  )
+
+dqlab.trans.combi.slow.item.plot
