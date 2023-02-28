@@ -1,11 +1,11 @@
 "","Product_Name","Total"
-"1","Celana Jeans Sobek Pria",9
-"2","Tas Kosmetik",11
-"3","Stripe Pants",19
-"4","Pelembab",24
-"5","Tali Ban Ikat Pinggang",27
-"6","Baju Renang Pria Anak-anak",32
-"7","Hair Dye",46
-"8","Atasan Baju Belang",56
-"9","Tas Sekolah Anak Perempuan",71
-"10","Dompet Unisex",75
+"1","Dompet Unisex",75
+"2","Tas Sekolah Anak Perempuan",71
+"3","Atasan Baju Belang",56
+"4","Hair Dye",46
+"5","Baju Renang Pria Anak-anak",32
+"6","Tali Ban Ikat Pinggang",27
+"7","Pelembab",24
+"8","Stripe Pants",19
+"9","Tas Kosmetik",11
+"10","Celana Jeans Sobek Pria",9
