@@ -32,20 +32,22 @@ View(dqlab.trans.freq)
 write.csv(dqlab.trans.freq, file = "Transaction Frequency.txt")
 # * 3.1. Top 10 -----------------------------------------------------------
 dqlab.trans.freq.top.10 <-
-  head(dqlab.trans.freq, 10)
+  dqlab.trans.freq %>% 
+  head(10) %>% 
+  arrange(Total)
 dqlab.trans.freq.top.10$Product_Name <-
   factor(dqlab.trans.freq.top.10$Product_Name,
          levels = dqlab.trans.freq.top.10$Product_Name)
 View(dqlab.trans.freq.top.10)
 write.csv(dqlab.trans.freq.top.10, file = "Top 10 Transaction.txt")
 # * * 5.1.1. Visualization ------------------------------------------------
-color.1 <- rev(brewer.pal(n = 9, name = "Greens"))
+color.1 <- brewer.pal(n = 9, name = "Greens")
 dqlab.trans.freq.top.10.plot <-
   plot_ly(dqlab.trans.freq.top.10) %>%
   add_trace(
     x = ~ Total,
     y = ~ Product_Name,
-    type = "funnel",
+    type = "bar",
     color = ~ Product_Name,
     colors = color.1,
     hovertemplate = "<i>%{y}</i><br><b>%{x} Units</b></br><extra></extra>",
@@ -53,6 +55,8 @@ dqlab.trans.freq.top.10.plot <-
   ) %>%
   layout(
     showlegend = F,
+    xaxis = list(title = "Total Transaction",
+                 range = c(0,2075)),
     yaxis = list(title = "Fashion Item"),
     title = "Top 10 Fashion Item Transaction"
   )
@@ -60,7 +64,8 @@ dqlab.trans.freq.top.10.plot
 
 # * 5.2. Bottom 10 --------------------------------------------------------
 dqlab.trans.freq.bottom.10 <-
-  tail(dqlab.trans.freq, 10)
+  dqlab.trans.freq %>% 
+  tail(10)
 dqlab.trans.freq.bottom.10$Product_Name <-
   factor(dqlab.trans.freq.bottom.10$Product_Name,
          levels = dqlab.trans.freq.bottom.10$Product_Name)
@@ -72,7 +77,7 @@ dqlab.trans.freq.bottom.10.plot <-
   add_trace(
     x = ~ Total,
     y = ~ Product_Name,
-    type = "funnel",
+    type = "bar",
     color = ~ Product_Name,
     colors = color.2,
     hovertemplate = "<i>%{y}</i><br><b>%{x} Units</b></br><extra></extra>",
@@ -80,13 +85,15 @@ dqlab.trans.freq.bottom.10.plot <-
   ) %>%
   layout(
     showlegend = F,
+    xaxis = list(title = "Total Transaction",
+                 range = c(0,2075)),
     yaxis = list(title = "Fashion Item"),
     title = "Bottom 10 Fashion Item Transaction"
   )
 dqlab.trans.freq.bottom.10.plot
 
 
-# 6. Product Combination Based on Filter ----------------------------------
+  # 6. Product Combination Based on Filter ----------------------------------
 dqlab.trans.combi <-
   apriori(dqlab.trans,
           parameter = list(
