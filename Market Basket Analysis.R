@@ -1,33 +1,11 @@
-# 1. Save & Load Work Space -----------------------------------------------
-getwd()
-setwd("D:/Coding/YOHANES CANDRA KUSUMAPUTRA PORTFOLIO/MARKET BASKET ANALYSIS")
-save.image(
-  "D:/Coding/YOHANES CANDRA KUSUMAPUTRA PORTFOLIO/MARKET BASKET ANALYSIS/MARKET BASKET ANALYSIS.RDATA"
-)
-load(
-  "D:/Coding/YOHANES CANDRA KUSUMAPUTRA PORTFOLIO/MARKET BASKET ANALYSIS/MARKET BASKET ANALYSIS.RDATA"
-)
-
-
-# 2. Copy Paste Clipboard -------------------------------------------------
-to_clip_board <- function(x) {
-  message(paste(as.character(substitute(x)), "written to clipboard."))
-  write.table(
-    paste0(capture.output(x), collapse = "\n"),
-    "clipboard",
-    col.names = FALSE,
-    row.names = FALSE
-  )
-}
-
-
-# 3. Packages List --------------------------------------------------------
+# 1. Packages List --------------------------------------------------------
+library(tidyverse)
 library(arules)
 library(arulesViz)
-library(tidyverse)
+library(plotly)
 
 
-# 4. Data Frame List -------------------------------------------------------
+# 2. Main Data Frame ------------------------------------------------------
 dqlab.trans <-
   read.transactions(
     file = "https://storage.googleapis.com/dqlab-dataset/transaksi_dqlab_retail.tsv",
@@ -39,10 +17,9 @@ dqlab.trans <-
 print(dqlab.trans)
 dqlab.trans <-
   itemFrequency(dqlab.trans, type = "absolute")
-print(dqlab.trans)
 
 
-# 5. Top 10 & Bottom 10 ---------------------------------------------------
+# 3. Transaction Frequency ------------------------------------------------
 dqlab.trans.freq <-
   sort(dqlab.trans, decreasing = T)
 dqlab.trans.freq <-
@@ -53,42 +30,48 @@ dqlab.trans.freq <-
     row.names = NULL
   )
 View(dqlab.trans.freq)
-write.csv(dqlab.trans.freq, file = "TRANSACTION FREQUENCY.txt")
-# * 5.1. Top 10 -----------------------------------------------------------
+write.csv(dqlab.trans.freq, file = "Transaction Frequency.txt")
+# * 3.1. Visualization ----------------------------------------------------
+color.1 <- rev(brewer.pal(n = 9, name = "OrRd"))
+dqlab.trans.freq.plot <-
+  plot_ly(dqlab.trans.freq) %>%
+  add_trace(
+    x = ~ Total,
+    y = ~ Product_Name,
+    type = "funnel",
+    color = ~ Product_Name,
+    colors = color.1,
+    hovertemplate = "<i>%{y}</i><br><b>%{x} Units</b></br><extra></extra>",
+    textposition = "none"
+  ) %>%
+  layout(
+    showlegend = F,
+    yaxis = list(title = "Fashion Item"),
+    title = "Fashion Item Total Transaction"
+  )
+dqlab.trans.freq.plot
+# * 3.1. Top 10 -----------------------------------------------------------
 dqlab.trans.freq.top.10 <-
   head(dqlab.trans.freq, 10)
 View(dqlab.trans.freq.top.10)
+write.csv(dqlab.trans.freq.top.10, file = "Top 10 Transaction.txt")
 # * * 5.1.1. Visualization ------------------------------------------------
 dqlab.trans.freq.top.10.plot <-
-  dqlab.trans.freq.top.10 %>%
-  arrange(dqlab.trans.freq.top.10$Total)
-dqlab.trans.freq.top.10.plot$Product_Name <-
-  factor(
-    dqlab.trans.freq.top.10.plot$Product_Name,
-    levels = levels(dqlab.trans.freq.top.10.plot$Product_Name)[10:1]
+  plot_ly(dqlab.trans.freq) %>%
+  add_trace(
+    x = ~ Total,
+    y = ~ Product_Name,
+    type = "funnel",
+    color = ~ Product_Name,
+    colors = color.1,
+    hovertemplate = "<i>%{y}</i><br><b>%{x} Units</b></br><extra></extra>",
+    textposition = "none"
+  ) %>%
+  layout(
+    showlegend = F,
+    yaxis = list(title = "Fashion Item"),
+    title = "Top 10 Fashion Item Transaction"
   )
-dqlab.trans.freq.top.10.plot <-
-  ggplot(dqlab.trans.freq.top.10.plot,
-         aes(x = Total,
-             y = Product_Name,
-             fill = Product_Name)) +
-  geom_bar(stat = "identity") +
-  labs(
-    x = "Total",
-    y = "Product Name",
-    title = "Best-Selling Products",
-    subtitle = "Top 10"
-  ) +
-  theme_minimal() +
-  theme(
-    legend.position = "none",
-    panel.grid.major.x = element_line(size = 1),
-    plot.title = element_text(hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5)
-  ) +
-  geom_text(aes(label = Total),
-            position = position_stack(vjust = 1),
-            hjust = 1.2)
 dqlab.trans.freq.top.10.plot
 
 # * 5.2. Bottom 10 --------------------------------------------------------
@@ -97,35 +80,21 @@ dqlab.trans.freq.bottom.10 <-
 View(dqlab.trans.freq.bottom.10)
 # * * 5.2.1. Visualization ------------------------------------------------
 dqlab.trans.freq.bottom.10.plot <-
-  dqlab.trans.freq.bottom.10 %>%
-  arrange(dqlab.trans.freq.bottom.10$Total)
-dqlab.trans.freq.bottom.10.plot$Product_Name <-
-  factor(
-    dqlab.trans.freq.bottom.10.plot$Product_Name,
-    levels = levels(dqlab.trans.freq.bottom.10.plot$Product_Name)[69:60]
+  plot_ly(dqlab.trans.freq.bottom.10) %>%
+  add_trace(
+    x = ~ Total,
+    y = ~ Product_Name,
+    type = "funnel",
+    color = ~ Product_Name,
+    colors = color.1,
+    hovertemplate = "<i>%{y}</i><br><b>%{x} Units</b></br><extra></extra>",
+    textposition = "none"
+  ) %>%
+  layout(
+    showlegend = F,
+    yaxis = list(title = "Fashion Item"),
+    title = "Bottom 10 Fashion Item Total Transaction"
   )
-dqlab.trans.freq.bottom.10.plot <-
-  ggplot(dqlab.trans.freq.bottom.10.plot,
-         aes(x = Total,
-             y = Product_Name,
-             fill = Product_Name)) +
-  geom_bar(stat = "identity") +
-  labs(
-    x = "Total",
-    y = "Product Name",
-    title = "Least-Selling Products",
-    subtitle = "Bottom 10"
-  ) +
-  theme_minimal() +
-  theme(
-    legend.position = "none",
-    panel.grid.major.x = element_line(size = 1),
-    plot.title = element_text(hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5)
-  ) +
-  geom_text(aes(label = Total),
-            position = position_stack(vjust = 1),
-            hjust = 1.2)
 dqlab.trans.freq.bottom.10.plot
 
 
