@@ -24,40 +24,24 @@ dqlab.trans.freq <-
   sort(dqlab.trans, decreasing = T)
 dqlab.trans.freq <-
   data.frame(
-    Product_Name = factor(names(dqlab.trans.freq),
-                          levels = names(dqlab.trans.freq)),
+    Product_Name = names(dqlab.trans.freq),
     Total = dqlab.trans.freq,
     row.names = NULL
   )
 View(dqlab.trans.freq)
 write.csv(dqlab.trans.freq, file = "Transaction Frequency.txt")
-# * 3.1. Visualization ----------------------------------------------------
-color.1 <- rev(brewer.pal(n = 9, name = "OrRd"))
-dqlab.trans.freq.plot <-
-  plot_ly(dqlab.trans.freq) %>%
-  add_trace(
-    x = ~ Total,
-    y = ~ Product_Name,
-    type = "funnel",
-    color = ~ Product_Name,
-    colors = color.1,
-    hovertemplate = "<i>%{y}</i><br><b>%{x} Units</b></br><extra></extra>",
-    textposition = "none"
-  ) %>%
-  layout(
-    showlegend = F,
-    yaxis = list(title = "Fashion Item"),
-    title = "Fashion Item Total Transaction"
-  )
-dqlab.trans.freq.plot
 # * 3.1. Top 10 -----------------------------------------------------------
 dqlab.trans.freq.top.10 <-
   head(dqlab.trans.freq, 10)
+dqlab.trans.freq.top.10$Product_Name <-
+  factor(dqlab.trans.freq.top.10$Product_Name,
+         levels = dqlab.trans.freq.top.10$Product_Name)
 View(dqlab.trans.freq.top.10)
 write.csv(dqlab.trans.freq.top.10, file = "Top 10 Transaction.txt")
 # * * 5.1.1. Visualization ------------------------------------------------
+color.1 <- rev(brewer.pal(n = 9, name = "Greens"))
 dqlab.trans.freq.top.10.plot <-
-  plot_ly(dqlab.trans.freq) %>%
+  plot_ly(dqlab.trans.freq.top.10) %>%
   add_trace(
     x = ~ Total,
     y = ~ Product_Name,
@@ -77,8 +61,12 @@ dqlab.trans.freq.top.10.plot
 # * 5.2. Bottom 10 --------------------------------------------------------
 dqlab.trans.freq.bottom.10 <-
   tail(dqlab.trans.freq, 10)
+dqlab.trans.freq.bottom.10$Product_Name <-
+  factor(dqlab.trans.freq.bottom.10$Product_Name,
+         levels = dqlab.trans.freq.bottom.10$Product_Name)
 View(dqlab.trans.freq.bottom.10)
 # * * 5.2.1. Visualization ------------------------------------------------
+color.2 <- brewer.pal(n = 9, name = "Reds")
 dqlab.trans.freq.bottom.10.plot <-
   plot_ly(dqlab.trans.freq.bottom.10) %>%
   add_trace(
@@ -86,14 +74,14 @@ dqlab.trans.freq.bottom.10.plot <-
     y = ~ Product_Name,
     type = "funnel",
     color = ~ Product_Name,
-    colors = color.1,
+    colors = color.2,
     hovertemplate = "<i>%{y}</i><br><b>%{x} Units</b></br><extra></extra>",
     textposition = "none"
   ) %>%
   layout(
     showlegend = F,
     yaxis = list(title = "Fashion Item"),
-    title = "Bottom 10 Fashion Item Total Transaction"
+    title = "Bottom 10 Fashion Item Transaction"
   )
 dqlab.trans.freq.bottom.10.plot
 
