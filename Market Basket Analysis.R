@@ -1,3 +1,4 @@
+# 2. Main Data Frame ------------------------------------------------------
 dqlab.trans <-
   read.transactions(
     file = "https://storage.googleapis.com/dqlab-dataset/transaksi_dqlab_retail.tsv",
