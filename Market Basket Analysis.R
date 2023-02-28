@@ -72,6 +72,7 @@ dqlab.trans.freq.bottom.10$Product_Name <-
   factor(dqlab.trans.freq.bottom.10$Product_Name,
          levels = dqlab.trans.freq.bottom.10$Product_Name)
 View(dqlab.trans.freq.bottom.10)
+write.csv(dqlab.trans.freq.bottom.10, file = "Bottom 10 Transaction.txt")
 # * * 3.2.1. Visualization ------------------------------------------------
 color.2 <- rev(brewer.pal(n = 9, name = "Reds"))
 dqlab.trans.freq.bottom.10.plot <-
