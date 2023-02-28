@@ -1,0 +1,11 @@
+"","Product_Name","Total"
+"1","Wedges Hitam",849
+"2","Sepatu Sport merk Z",888
+"3","Tali Pinggang Gesper Pria",1003
+"4","Sepatu Sandal Anak",1062
+"5","Cover Koper",1086
+"6","Celana Jogger Casual",1136
+"7","Baju Kemeja Putih",1255
+"8","Baju Batik Wanita",1312
+"9","Serum Vitamin",1685
+"10","Shampo Biasa",2075
