@@ -32,7 +32,8 @@ dqlab.trans.freq <-
 View(dqlab.trans.freq)
 write.csv(dqlab.trans.freq, file = "Total Transaction.txt")
 
-# * 3.1. Top 10 -----------------------------------------------------------
+
+# * 3.1. Top 10 Transaction -----------------------------------------------
 dqlab.trans.freq.top.10 <-
   dqlab.trans.freq %>%
   head(10) %>%
@@ -64,7 +65,7 @@ dqlab.trans.freq.top.10.plot <-
   )
 dqlab.trans.freq.top.10.plot
 
-# * 3.2. Bottom 10 --------------------------------------------------------
+# * 3.2. Bottom 10 Transaction --------------------------------------------
 dqlab.trans.freq.bottom.10 <-
   dqlab.trans.freq %>%
   tail(10) %>%
@@ -97,7 +98,7 @@ dqlab.trans.freq.bottom.10.plot <-
 dqlab.trans.freq.bottom.10.plot
 
 
-# 4. Product Combination Based on Filter ----------------------------------
+# 4. Products Bundles Based on Filter -------------------------------------
 dqlab.trans.combi <-
   apriori(dqlab.trans.1,
           parameter = list(
@@ -111,7 +112,7 @@ dqlab.trans.combi <-
 dqlab.trans.combi <-
   DATAFRAME(dqlab.trans.combi)
 View(dqlab.trans.combi)
-write.csv(dqlab.trans.combi, file = "Top 10 Product Combination Based on Filter.txt")
+write.csv(dqlab.trans.combi, file = "Top 10 Products Bundles Based on Filter.txt")
 # * 4.1. Visualization ----------------------------------------------------
 dqlab.trans.combi <- 
   dqlab.trans.combi[,c(1,2,6)]
@@ -121,7 +122,7 @@ dqlab.trans.combi.plot <-
   ggplotly(
     ggplot(dqlab.trans.combi,
            aes(
-             x = str_wrap(LHS, 20),
+             x = str_wrap(LHS, 25),
              y = str_wrap(RHS, 15),
              fill = lift,
              text = paste("LHS: ", LHS, "<br>",
@@ -138,7 +139,7 @@ dqlab.trans.combi.plot <-
         direction = 1
       ) +
       labs(
-        title = "Top 10 Product Combination",
+        title = "Top 10 Product Bundles",
         subtitle = "Based on Filters",
         x = "LHS",
         y = "RHS"
@@ -153,7 +154,7 @@ dqlab.trans.combi.plot <-
 dqlab.trans.combi.plot
 
 
-# 5. Product Combination Based on Slow Moving Item ------------------------
+# 5. Product Bundles Based on Slow Moving Item ----------------------------
 dqlab.trans.combi.slow.item <-
   apriori(dqlab.trans.1,
           parameter = list(
@@ -179,7 +180,7 @@ dqlab.trans.combi.slow.item <-
 dqlab.trans.combi.slow.item <-
   DATAFRAME(dqlab.trans.combi.slow.item)
 View(dqlab.trans.combi.slow.item)
-write.csv(dqlab.trans.combi.slow.item, file = "Product Combination on Slow Moving Item.txt")
+write.csv(dqlab.trans.combi.slow.item, file = "Products Bundles on Slow Moving Item.txt")
 # * 5.1. Visualization ----------------------------------------------------
 dqlab.trans.combi.slow.item <- 
   dqlab.trans.combi.slow.item[,c(1,2,6)]
@@ -220,5 +221,4 @@ dqlab.trans.combi.slow.item.plot <-
     ,
     tooltip = c("text")
   )
-
 dqlab.trans.combi.slow.item.plot
