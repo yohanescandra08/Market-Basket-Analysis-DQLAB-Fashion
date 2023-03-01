@@ -42,7 +42,8 @@ dqlab.trans.freq.top.10$Product_Name <-
   factor(dqlab.trans.freq.top.10$Product_Name,
          levels = dqlab.trans.freq.top.10$Product_Name)
 View(dqlab.trans.freq.top.10)
-write.csv(dqlab.trans.freq %>% head(10) %>% arrange(desc(Total)), file = "Top 10 Transaction.txt")
+write.csv(dqlab.trans.freq %>% head(10) %>% arrange(desc(Total)),
+          file = "Top 10 Transaction.txt")
 # * * 3.1.1. Visualization ------------------------------------------------
 color.1 <- brewer.pal(n = 9, name = "Greens")
 dqlab.trans.freq.top.10.plot <-
@@ -58,7 +59,7 @@ dqlab.trans.freq.top.10.plot <-
   ) %>%
   layout(
     showlegend = F,
-    xaxis = list(title = "Total Transaction",
+    xaxis = list(title = "Total Unit",
                  range = c(0, 2075)),
     yaxis = list(title = "Fashion Item"),
     title = "Top 10 Fashion Item Transaction"
@@ -74,7 +75,8 @@ dqlab.trans.freq.bottom.10$Product_Name <-
   factor(dqlab.trans.freq.bottom.10$Product_Name,
          levels = dqlab.trans.freq.bottom.10$Product_Name)
 View(dqlab.trans.freq.bottom.10)
-write.csv(dqlab.trans.freq %>% tail(10) %>% arrange(desc(Total)), file = "Bottom 10 Transaction.txt")
+write.csv(dqlab.trans.freq %>% tail(10) %>% arrange(desc(Total)),
+          file = "Bottom 10 Transaction.txt")
 # * * 3.2.1. Visualization ------------------------------------------------
 color.2 <- rev(brewer.pal(n = 9, name = "Reds"))
 dqlab.trans.freq.bottom.10.plot <-
@@ -90,7 +92,7 @@ dqlab.trans.freq.bottom.10.plot <-
   ) %>%
   layout(
     showlegend = F,
-    xaxis = list(title = "Total Transaction",
+    xaxis = list(title = "Total Unit",
                  range = c(0, 2075)),
     yaxis = list(title = "Fashion Item"),
     title = "Bottom 10 Fashion Item Transaction"
@@ -114,25 +116,29 @@ dqlab.trans.combi <-
 View(dqlab.trans.combi)
 write.csv(dqlab.trans.combi, file = "Top 10 Products Bundles Based on Filter.txt")
 # * 4.1. Visualization ----------------------------------------------------
-dqlab.trans.combi <- 
-  dqlab.trans.combi[,c(1,2,6)]
-dqlab.trans.combi$rule <- 
+dqlab.trans.combi <-
+  dqlab.trans.combi[, c(1, 2, 6)]
+dqlab.trans.combi$rule <-
   paste("Rule", 1:10)
 dqlab.trans.combi.plot <-
   ggplotly(
-    ggplot(dqlab.trans.combi,
-           aes(
-             x = str_wrap(LHS, 25),
-             y = str_wrap(RHS, 15),
-             fill = lift,
-             text = paste("LHS: ", LHS, "<br>",
-                          "RHS: ", RHS, "<br>",
-                          "Lift: ", lift, "<br>")
-           )) +
+    ggplot(
+      dqlab.trans.combi,
+      aes(
+        x = str_wrap(LHS, 25),
+        y = str_wrap(RHS, 15),
+        fill = lift,
+        text = paste("LHS: ", LHS, "<br>",
+                     "RHS: ", RHS, "<br>",
+                     "Lift: ", lift, "<br>")
+      )
+    ) +
       geom_tile() +
-      geom_text(aes(label = rule),
-                position = position_stack(vjust = 1),
-                vjust = 0.5) +
+      geom_text(
+        aes(label = rule),
+        position = position_stack(vjust = 1),
+        vjust = 0.5
+      ) +
       scale_fill_distiller(
         type = "seq",
         palette = "YlOrRd",
@@ -182,38 +188,40 @@ dqlab.trans.combi.slow.item <-
 View(dqlab.trans.combi.slow.item)
 write.csv(dqlab.trans.combi.slow.item, file = "Products Bundles on Slow Moving Item.txt")
 # * 5.1. Visualization ----------------------------------------------------
-dqlab.trans.combi.slow.item <- 
-  dqlab.trans.combi.slow.item[,c(1,2,6)]
-dqlab.trans.combi.slow.item <- 
-  dqlab.trans.combi.slow.item %>% 
+dqlab.trans.combi.slow.item <-
+  dqlab.trans.combi.slow.item[, c(1, 2, 6)]
+dqlab.trans.combi.slow.item <-
+  dqlab.trans.combi.slow.item %>%
   arrange(desc(lift))
-dqlab.trans.combi.slow.item$rule <- 
+dqlab.trans.combi.slow.item$rule <-
   paste("Rule", 1:6)
 dqlab.trans.combi.slow.item.plot <-
   ggplotly(
-    ggplot(dqlab.trans.combi.slow.item,
-           aes(
-             x = str_wrap(LHS, 20),
-             y = str_wrap(RHS, 15),
-             fill = lift,
-             text = paste("LHS: ", LHS, "<br>",
-                          "RHS: ", RHS, "<br>",
-                          "Lift: ", lift, "<br>")
-           )) +
+    ggplot(
+      dqlab.trans.combi.slow.item,
+      aes(
+        x = str_wrap(LHS, 20),
+        y = str_wrap(RHS, 15),
+        fill = lift,
+        text = paste("LHS: ", LHS, "<br>",
+                     "RHS: ", RHS, "<br>",
+                     "Lift: ", lift, "<br>")
+      )
+    ) +
       geom_tile() +
-      geom_text(aes(label = rule),
-                position = position_stack(vjust = 1),
-                vjust = 0.5) +
+      geom_text(
+        aes(label = rule),
+        position = position_stack(vjust = 1),
+        vjust = 0.5
+      ) +
       scale_fill_distiller(
         type = "seq",
         palette = "YlOrRd",
         direction = 1
       ) +
-      labs(
-        title = "Products Bundles on Slow Move Item",
-        x = "LHS",
-        y = "RHS"
-      ) +
+      labs(title = "Products Bundles on Slow Move Item",
+           x = "LHS",
+           y = "RHS") +
       theme(
         legend.position = "none",
         axis.text.x = element_text(angle = 45)
