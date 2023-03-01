@@ -20,7 +20,7 @@ dqlab.trans.2 <-
   itemFrequency(dqlab.trans.1, type = "absolute")
 
 
-# 3. Transaction Frequency ------------------------------------------------
+# 3. Total Unit Sell ------------------------------------------------------
 dqlab.trans.freq <-
   sort(dqlab.trans.2, decreasing = T)
 dqlab.trans.freq <-
@@ -30,10 +30,10 @@ dqlab.trans.freq <-
     row.names = NULL
   )
 View(dqlab.trans.freq)
-write.csv(dqlab.trans.freq, file = "Total Transaction.txt")
+write.csv(dqlab.trans.freq, file = "Total Unit Sell.txt")
 
 
-# * 3.1. Top 10 Transaction -----------------------------------------------
+# * 3.1. Top 10 Product Sell ----------------------------------------------
 dqlab.trans.freq.top.10 <-
   dqlab.trans.freq %>%
   head(10) %>%
@@ -43,7 +43,7 @@ dqlab.trans.freq.top.10$Product_Name <-
          levels = dqlab.trans.freq.top.10$Product_Name)
 View(dqlab.trans.freq.top.10)
 write.csv(dqlab.trans.freq %>% head(10) %>% arrange(desc(Total)),
-          file = "Top 10 Transaction.txt")
+          file = "Top 10 Product Sell.txt")
 # * * 3.1.1. Visualization ------------------------------------------------
 color.1 <- brewer.pal(n = 9, name = "Greens")
 dqlab.trans.freq.top.10.plot <-
@@ -62,11 +62,11 @@ dqlab.trans.freq.top.10.plot <-
     xaxis = list(title = "Total Unit",
                  range = c(0, 2075)),
     yaxis = list(title = "Fashion Item"),
-    title = "Top 10 Fashion Item Transaction"
+    title = "Top 10 Fashion Item Sell"
   )
 dqlab.trans.freq.top.10.plot
 
-# * 3.2. Bottom 10 Transaction --------------------------------------------
+# * 3.2. Bottom 10 Product Sell -------------------------------------------
 dqlab.trans.freq.bottom.10 <-
   dqlab.trans.freq %>%
   tail(10) %>%
@@ -76,7 +76,7 @@ dqlab.trans.freq.bottom.10$Product_Name <-
          levels = dqlab.trans.freq.bottom.10$Product_Name)
 View(dqlab.trans.freq.bottom.10)
 write.csv(dqlab.trans.freq %>% tail(10) %>% arrange(desc(Total)),
-          file = "Bottom 10 Transaction.txt")
+          file = "Bottom 10 Product Sell.txt")
 # * * 3.2.1. Visualization ------------------------------------------------
 color.2 <- rev(brewer.pal(n = 9, name = "Reds"))
 dqlab.trans.freq.bottom.10.plot <-
@@ -95,7 +95,7 @@ dqlab.trans.freq.bottom.10.plot <-
     xaxis = list(title = "Total Unit",
                  range = c(0, 2075)),
     yaxis = list(title = "Fashion Item"),
-    title = "Bottom 10 Fashion Item Transaction"
+    title = "Bottom 10 Fashion Item Sell"
   )
 dqlab.trans.freq.bottom.10.plot
 
