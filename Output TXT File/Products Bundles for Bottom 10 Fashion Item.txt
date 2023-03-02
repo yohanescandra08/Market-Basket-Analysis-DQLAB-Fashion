@@ -1,0 +1,7 @@
+"","LHS","RHS","lift","rule"
+"1","{Celana Pendek Casual,Woman Ripped Jeans }","{Stripe Pants}",65.3684210526316,"Rule 1"
+"2","{Gembok Koper,Tas Waist Bag}","{Baju Renang Pria Anak-anak}",29.5955882352941,"Rule 2"
+"3","{Sweater Top Panjang,Tank Top}","{Atasan Baju Belang}",16.4639778325123,"Rule 3"
+"4","{Tank Top,Tas Ransel Mini}","{Tas Sekolah Anak Perempuan}",9.44835680751174,"Rule 4"
+"5","{Tas Ransel Mini,Tas Waist Bag}","{Hair Dye}",8.4375,"Rule 5"
+"6","{Baju Batik Wanita,Hair Dryer}","{Dompet Unisex}",7.38271604938272,"Rule 6"
