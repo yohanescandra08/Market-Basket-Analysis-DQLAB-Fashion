@@ -100,7 +100,135 @@ dqlab.trans.freq.bottom.10.plot <-
 dqlab.trans.freq.bottom.10.plot
 
 
-# 4. Products Bundles Based on Filter -------------------------------------
+# 4. Products Bundles Combination for Bottom 10 Fashion Item --------------
+dqlab.trans.combi.bottom.10 <-
+  apriori(dqlab.trans.1,
+          parameter = list(
+            supp = 9 / length(dqlab.trans.1),
+            confidence = 0.1,
+            minlen = 2,
+            maxlen = 3
+          ))
+dqlab.trans.combi.bottom.10 <-
+  c(
+    head(sort(
+      subset(
+        dqlab.trans.combi.bottom.10,
+        (rhs %in% "Celana Jeans Sobek Pria")
+      ),
+      by = "lift"
+    ), n = 1),
+    head(sort(
+      subset(dqlab.trans.combi.bottom.10,
+             (rhs %in% "Tas Kosmetik")),
+      by = "lift"
+    ),
+    n = 1),
+    head(sort(
+      subset(dqlab.trans.combi.bottom.10,
+             (rhs %in% "Stripe Pants")),
+      by = "lift"
+    ),
+    n = 1),
+    head(sort(
+      subset(dqlab.trans.combi.bottom.10,
+             (rhs %in% "Pelembab")),
+      by = "lift"
+    ),
+    n = 1),
+    head(sort(
+      subset(dqlab.trans.combi.bottom.10,
+             (rhs %in% "Tali Ban Ikat Pinggang")),
+      by = "lift"
+    ),
+    n = 1),
+    head(sort(
+      subset(
+        dqlab.trans.combi.bottom.10,
+        (rhs %in% "Baju Renang Pria Anak-anak")
+      ),
+      by = "lift"
+    ),
+    n = 1),
+    head(sort(
+      subset(dqlab.trans.combi.bottom.10,
+             (rhs %in% "Hair Dye")),
+      by = "lift"
+    ),
+    n = 1),
+    head(sort(
+      subset(dqlab.trans.combi.bottom.10,
+             (rhs %in% "Atasan Baju Belang")),
+      by = "lift"
+    ),
+    n = 1),
+    head(sort(
+      subset(
+        dqlab.trans.combi.bottom.10,
+        (rhs %in% "Tas Sekolah Anak Perempuan")
+      ),
+      by = "lift"
+    ),
+    n = 1),
+    head(sort(
+      subset(dqlab.trans.combi.bottom.10,
+             (rhs %in% "Dompet Unisex")),
+      by = "lift"
+    ),
+    n = 1)
+  )
+dqlab.trans.combi.bottom.10 <-
+  DATAFRAME(dqlab.trans.combi.bottom.10)
+View(dqlab.trans.combi.bottom.10)
+write.csv(dqlab.trans.combi.bottom.10,
+          file = "Products Bundles for Bottom 10 Fashion Item.txt")
+# * 5.1. Visualization ----------------------------------------------------
+dqlab.trans.combi.bottom.10 <-
+  dqlab.trans.combi.bottom.10[, c(1, 2, 6)]
+dqlab.trans.combi.bottom.10 <-
+  dqlab.trans.combi.bottom.10 %>%
+  arrange(desc(lift))
+nrow(dqlab.trans.combi.bottom.10)
+dqlab.trans.combi.bottom.10$rule <-
+  paste("Rule", 1:6)
+dqlab.trans.combi.bottom.10.plot <-
+  ggplotly(
+    ggplot(
+      dqlab.trans.combi.bottom.10,
+      aes(
+        x = str_wrap(LHS, 25),
+        y = str_wrap(RHS, 15),
+        fill = lift,
+        text = paste("LHS: ", LHS, "<br>",
+                     "RHS: ", RHS, "<br>",
+                     "Lift: ", lift, "<br>")
+      )
+    ) +
+      geom_tile() +
+      geom_text(
+        aes(label = rule),
+        position = position_stack(vjust = 1),
+        vjust = 0.5
+      ) +
+      scale_fill_distiller(
+        type = "seq",
+        palette = "YlOrRd",
+        direction = 1
+      ) +
+      labs(title = "Product Bundles for Bottom 10 Fashion Item",
+           x = "LHS",
+           y = "RHS") +
+      theme(
+        legend.position = "none",
+        axis.text.x = element_text(angle = 45)
+      )
+    ,
+    tooltip = c("text")
+  )
+dqlab.trans.combi.bottom.10.plot
+
+
+# 5. Products Bundles Based on Requested Filters --------------------------
 dqlab.trans.combi <-
   apriori(dqlab.trans.1,
           parameter = list(
@@ -115,7 +243,7 @@ dqlab.trans.combi <-
   DATAFRAME(dqlab.trans.combi)
 View(dqlab.trans.combi)
 write.csv(dqlab.trans.combi, file = "Top 10 Products Bundles Based on Filter.txt")
-# * 4.1. Visualization ----------------------------------------------------
+# * 5.1. Visualization ----------------------------------------------------
 dqlab.trans.combi <-
   dqlab.trans.combi[, c(1, 2, 6)]
 dqlab.trans.combi$rule <-
@@ -146,7 +274,6 @@ dqlab.trans.combi.plot <-
       ) +
       labs(
         title = "Top 10 Product Bundles",
-        subtitle = "Based on Filters",
         x = "LHS",
         y = "RHS"
       ) +
@@ -160,7 +287,7 @@ dqlab.trans.combi.plot <-
 dqlab.trans.combi.plot
 
 
-# 5. Product Bundles Based on Slow Moving Item ----------------------------
+# 6. Product Bundles Based on Slow Moving Item ----------------------------
 dqlab.trans.combi.slow.item <-
   apriori(dqlab.trans.1,
           parameter = list(
@@ -187,7 +314,7 @@ dqlab.trans.combi.slow.item <-
   DATAFRAME(dqlab.trans.combi.slow.item)
 View(dqlab.trans.combi.slow.item)
 write.csv(dqlab.trans.combi.slow.item, file = "Products Bundles on Slow Moving Item.txt")
-# * 5.1. Visualization ----------------------------------------------------
+# * 6.1. Visualization ----------------------------------------------------
 dqlab.trans.combi.slow.item <-
   dqlab.trans.combi.slow.item[, c(1, 2, 6)]
 dqlab.trans.combi.slow.item <-
@@ -219,7 +346,7 @@ dqlab.trans.combi.slow.item.plot <-
         palette = "YlOrRd",
         direction = 1
       ) +
-      labs(title = "Products Bundles on Slow Move Item",
+      labs(title = "Product Bundles for Slow Move Item",
            x = "LHS",
            y = "RHS") +
       theme(
