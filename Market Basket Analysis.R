@@ -182,15 +182,21 @@ dqlab.trans.combi.bottom.10 <-
 View(dqlab.trans.combi.bottom.10)
 write.csv(dqlab.trans.combi.bottom.10,
           file = "Products Bundles for Bottom 10 Fashion Item.txt")
-# * 5.1. Visualization ----------------------------------------------------
-dqlab.trans.combi.bottom.10 <-
-  dqlab.trans.combi.bottom.10[, c(1, 2, 6)]
+# * 4.1. Visualization ----------------------------------------------------
 dqlab.trans.combi.bottom.10 <-
   dqlab.trans.combi.bottom.10 %>%
   arrange(desc(lift))
 nrow(dqlab.trans.combi.bottom.10)
 dqlab.trans.combi.bottom.10$rule <-
   paste("Rule", 1:6)
+dqlab.trans.combi.bottom.10$support <-
+  round(dqlab.trans.combi.bottom.10$support, digits = 3)
+dqlab.trans.combi.bottom.10$confidence <-
+  round(dqlab.trans.combi.bottom.10$confidence, digits = 3)
+dqlab.trans.combi.bottom.10$coverage <-
+  round(dqlab.trans.combi.bottom.10$coverage, digits = 3)
+dqlab.trans.combi.bottom.10$lift <-
+  round(dqlab.trans.combi.bottom.10$lift, digits = 3)
 dqlab.trans.combi.bottom.10.plot <-
   ggplotly(
     ggplot(
@@ -199,9 +205,28 @@ dqlab.trans.combi.bottom.10.plot <-
         x = str_wrap(LHS, 25),
         y = str_wrap(RHS, 15),
         fill = lift,
-        text = paste("LHS: ", LHS, "<br>",
-                     "RHS: ", RHS, "<br>",
-                     "Lift: ", lift, "<br>")
+        text = paste(
+          "<b>",
+          "LHS : ",
+          LHS,
+          "<br>",
+          "RHS : ",
+          RHS,
+          "<br>",
+          "Lift : ",
+          lift,
+          "</b>",
+          "<br>",
+          "Support : ",
+          support,
+          "<br>",
+          "Confidence : ",
+          confidence,
+          "<br>",
+          "Coverage : ",
+          coverage,
+          "</br>"
+        )
       )
     ) +
       geom_tile() +
@@ -215,13 +240,13 @@ dqlab.trans.combi.bottom.10.plot <-
         palette = "YlOrRd",
         direction = 1
       ) +
-      labs(title = "Product Bundles for Bottom 10 Fashion Item",
-           x = "LHS",
-           y = "RHS") +
-      theme(
-        legend.position = "none",
-        axis.text.x = element_text(angle = 45)
-      )
+      labs(
+        title = "Product Bundles for Bottom 10 Fashion Item",
+        x = "LHS",
+        y = "RHS",
+        fill = "Lift"
+      ) +
+      theme(axis.text.x = element_text(angle = 45))
     ,
     tooltip = c("text")
   )
@@ -272,11 +297,9 @@ dqlab.trans.combi.plot <-
         palette = "YlOrRd",
         direction = 1
       ) +
-      labs(
-        title = "Top 10 Product Bundles",
-        x = "LHS",
-        y = "RHS"
-      ) +
+      labs(title = "Top 10 Product Bundles",
+           x = "LHS",
+           y = "RHS") +
       theme(
         legend.position = "none",
         axis.text.x = element_text(angle = 45)
