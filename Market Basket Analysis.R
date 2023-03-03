@@ -4,10 +4,13 @@ library(arules)
 library(arulesViz)
 library(plotly)
 library(RColorBrewer)
+library(reactablefmtr)
+library(htmltools)
+library(htmlwidgets)
 
 
 # 2. Main Data Frame ------------------------------------------------------
-dqlab.trans.1 <-
+dqlab.trans <-
   read.transactions(
     file = "https://storage.googleapis.com/dqlab-dataset/transaksi_dqlab_retail.tsv",
     format = "single",
@@ -15,35 +18,119 @@ dqlab.trans.1 <-
     cols = c(1, 2),
     skip = 1
   )
-print(dqlab.trans.1)
-dqlab.trans.2 <-
-  itemFrequency(dqlab.trans.1, type = "absolute")
+print(dqlab.trans)
+dqlab.item.freq <-
+  itemFrequency(dqlab.trans, type = "absolute")
+print(dqlab.item.freq)
 
 
-# 3. Total Unit Sell ------------------------------------------------------
-dqlab.trans.freq <-
-  sort(dqlab.trans.2, decreasing = T)
-dqlab.trans.freq <-
+# 3. Data Exploration -----------------------------------------------------
+dqlab.exp <-
+  sort(dqlab.item.freq, decreasing = T)
+dqlab.exp <-
   data.frame(
-    Product_Name = names(dqlab.trans.freq),
-    Total = dqlab.trans.freq,
+    Product_Name = names(dqlab.exp),
+    Total = dqlab.exp,
     row.names = NULL
   )
-View(dqlab.trans.freq)
-write.csv(dqlab.trans.freq, file = "Total Unit Sell.txt")
-
-
+View(dqlab.exp)
+write.csv(dqlab.exp, file = "Total Unit Sell.txt")
 # * 3.1. Top 10 Product Sell ----------------------------------------------
-dqlab.trans.freq.top.10 <-
-  dqlab.trans.freq %>%
-  head(10) %>%
-  arrange(Total)
-dqlab.trans.freq.top.10$Product_Name <-
-  factor(dqlab.trans.freq.top.10$Product_Name,
-         levels = dqlab.trans.freq.top.10$Product_Name)
-View(dqlab.trans.freq.top.10)
-write.csv(dqlab.trans.freq %>% head(10) %>% arrange(desc(Total)),
+dqlab.exp.top.10 <-
+  dqlab.exp %>%
+  head(10)
+dqlab.exp.top.10$Product_Name <-
+  factor(dqlab.exp.top.10$Product_Name,
+         levels = dqlab.exp.top.10$Product_Name)
+View(dqlab.exp.top.10)
+write.csv(dqlab.exp %>% head(10) %>% arrange(desc(Total)),
           file = "Top 10 Product Sell.txt")
+# * 3.2. Bottom 10 Product Sell -------------------------------------------
+dqlab.exp.bottom.10 <-
+  dqlab.exp %>%
+  tail(10)
+dqlab.exp.bottom.10$Product_Name <-
+  factor(dqlab.exp.bottom.10$Product_Name,
+         levels = dqlab.exp.bottom.10$Product_Name)
+View(dqlab.exp.bottom.10)
+write.csv(dqlab.exp %>% tail(10) %>% arrange(desc(Total)),
+          file = "Bottom 10 Product Sell.txt")
+# * 3.3. Visualization ----------------------------------------------------
+dqlab.exp.plot <-
+  dqlab.exp %>%
+  mutate(Rank = 1:nrow(dqlab.exp), .before = 1) %>%
+  mutate(
+    Top_bottom =
+      c(
+        paste("Top", 1:10),
+        rep(NA, each = nrow(dqlab.exp) - 20),
+        paste("Bottom", 1:10)
+      ),
+    Has_missing = "",
+    Colors = rep(c("green", "grey", "red"), times = c(10, (nrow(
+      dqlab.exp
+    ) - 20), 10))
+  )
+dqlab.exp.plot$Has_missing <- complete.cases(dqlab.exp.plot)
+dqlab.exp.plot <-
+  browsable(tagList(
+    tags$label(
+      tags$input(type = "checkbox",
+                 onclick = "Reactable.setFilter('items-missing', 'Has_missing', event.target.checked)"),
+      "Top 10 & Bottom 10 Fashion Item"
+    ),
+    reactable(
+      dqlab.exp.plot,
+      theme = pff(centered = T),
+      columns = list(
+        Rank = colDef(name = "Rank",
+                      align = "center"),
+        Product_Name = colDef(name = "Product Name",
+                              align = "left"),
+        Total = colDef(
+          name = "Total Unit",
+          align = "center",
+          cell = data_bars(
+            data = dqlab.exp.plot,
+            fill_color = brewer.pal(5, "BrBG"),
+            round_edges = T,
+            text_position = "outside-end",
+            background = "transperent",
+            box_shadow = T,
+            bar_height = 5
+          )
+        ),
+        Top_bottom = colDef(
+          name = "Top 10 / Bottom 10",
+          align = "center",
+          cell = pill_buttons(
+            data = dqlab.exp.plot,
+            color_ref = "Colors",
+            box_shadow = T
+          )
+        ),
+        Colors = colDef(show = F),
+        Has_missing = colDef(
+          show = FALSE,
+          filterMethod = JS(
+            "function(rows, columnId, filterValue) {
+          if (filterValue === true) {
+            return rows.filter(function(row) {
+              const hasMissing = row.values[columnId]
+              return hasMissing
+            })
+          }
+          return rows
+        }"
+          )
+        )
+      ),
+      elementId = "items-missing",
+      defaultPageSize = 20
+    )
+  ))
+dqlab.exp.plot
+
 # * * 3.1.1. Visualization ------------------------------------------------
 color.1 <- brewer.pal(n = 9, name = "Greens")
 dqlab.trans.freq.top.10.plot <-
@@ -65,18 +152,6 @@ dqlab.trans.freq.top.10.plot <-
     title = "Top 10 Fashion Item Sell"
   )
 dqlab.trans.freq.top.10.plot
-
-# * 3.2. Bottom 10 Product Sell -------------------------------------------
-dqlab.trans.freq.bottom.10 <-
-  dqlab.trans.freq %>%
-  tail(10) %>%
-  arrange(Total)
-dqlab.trans.freq.bottom.10$Product_Name <-
-  factor(dqlab.trans.freq.bottom.10$Product_Name,
-         levels = dqlab.trans.freq.bottom.10$Product_Name)
-View(dqlab.trans.freq.bottom.10)
-write.csv(dqlab.trans.freq %>% tail(10) %>% arrange(desc(Total)),
-          file = "Bottom 10 Product Sell.txt")
 # * * 3.2.1. Visualization ------------------------------------------------
 color.2 <- rev(brewer.pal(n = 9, name = "Reds"))
 dqlab.trans.freq.bottom.10.plot <-
