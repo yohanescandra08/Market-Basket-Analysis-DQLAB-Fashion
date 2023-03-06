@@ -219,6 +219,10 @@ dqlab.exp.bottom.10.combi <-
   )
 dqlab.exp.bottom.10.combi <-
   DATAFRAME(dqlab.exp.bottom.10.combi)
+dqlab.exp.bottom.10.combi$LHS <- 
+  str_remove_all(dqlab.exp.bottom.10.combi$LHS, "[[:{}]]")
+dqlab.exp.bottom.10.combi$RHS <- 
+  str_remove_all(dqlab.exp.bottom.10.combi$RHS, "[[:{}]]")
 View(dqlab.exp.bottom.10.combi)
 write.csv(dqlab.exp.bottom.10.combi,
           file = "Product Bundle Combinations for Bottom 10 Fashion Item.txt")
@@ -234,13 +238,13 @@ dqlab.exp.bottom.10.combi.plot <-
     ggplot(
       dqlab.exp.bottom.10.combi,
       aes(
-        x = str_wrap(LHS, 25),
+        x = gsub(LHS,pattern = ",", replacement = ", <br>"),
         y = str_wrap(RHS, 15),
         fill = lift,
         text = paste(
           "<b>",
           "LHS : ",
-          LHS,
+          gsub(LHS,pattern = ",", replacement = ", "),
           "<br>",
           "RHS : ",
           RHS,
@@ -276,12 +280,16 @@ dqlab.exp.bottom.10.combi.plot <-
         direction = 1
       ) +
       labs(
-        title = "Product Bundle Combinations for Bottom 10 Fashion Item",
+        title = "Product Bundle Combinations\n Bottom 10 Fashion Item",
         x = "LHS",
         y = "RHS",
-        fill = "Lift"
+        fill = paste("<b>", "Lift", "</b>")
       ) +
-      theme(axis.text.x = element_text(angle = 45))
+      theme(
+        axis.text.x = element_text(angle = 45),
+        plot.title = element_text(face = "bold"),
+        axis.title = element_text(face = "bold")
+      )
     ,
     tooltip = c("text")
   )
