@@ -1,5 +1,7 @@
 # 1. Packages List --------------------------------------------------------
 library(tidyverse)
+library(magrittr)
+library(scales)
 library(arules)
 library(plotly)
 library(RColorBrewer)
@@ -16,114 +18,88 @@ dqlab.trans <-
     sep = "\t",
     cols = c(1, 2),
     skip = 1
-  )
-print(dqlab.trans)
-dqlab.item.freq <-
-  itemFrequency(dqlab.trans, type = "absolute")
-print(dqlab.item.freq)
+  ) %>% print()
 
 
 # 3. Data Exploration -----------------------------------------------------
 dqlab.exp <-
-  sort(dqlab.item.freq, decreasing = T)
-dqlab.exp <-
-  data.frame(
-    Product_Name = names(dqlab.exp),
-    Total = dqlab.exp,
-    row.names = NULL
-  )
-View(dqlab.exp)
-write.csv(dqlab.exp, file = "Total Unit Sell.txt")
+  itemFrequency(dqlab.trans, "absolute") %>% data.frame() %>%
+  arrange(desc(.)) %>% rename(!!"Total" := ".") %>%
+  rownames_to_column("Product_Name") %>% print() %>%
+  write.csv(file = "Total Unit Sell.txt")
+
 # * 3.1. Top 10 Product Sell ----------------------------------------------
-dqlab.exp.top.10 <-
-  dqlab.exp %>%
-  head(10)
-dqlab.exp.top.10$Product_Name <-
-  factor(dqlab.exp.top.10$Product_Name,
-         levels = dqlab.exp.top.10$Product_Name)
-View(dqlab.exp.top.10)
-write.csv(dqlab.exp %>% head(10) %>% arrange(desc(Total)),
-          file = "Top 10 Product Sell.txt")
+dqlab.exp %>% head(10) %>% print() %>% write.csv(file = "Top 10 Product Sell.txt")
 # * 3.2. Bottom 10 Product Sell -------------------------------------------
-dqlab.exp.bottom.10 <-
-  dqlab.exp %>%
-  tail(10)
-dqlab.exp.bottom.10$Product_Name <-
-  factor(dqlab.exp.bottom.10$Product_Name,
-         levels = dqlab.exp.bottom.10$Product_Name)
-View(dqlab.exp.bottom.10)
-write.csv(dqlab.exp %>% tail(10) %>% arrange(desc(Total)),
-          file = "Bottom 10 Product Sell.txt")
+dqlab.exp %>% tail(10) %>% arrange(desc(Total)) %>% print() %>% write.csv(file = "Bottom 10 Product Sell.txt")
+
 # * 3.3. Visualization ----------------------------------------------------
-dqlab.exp.plot <-
-  dqlab.exp %>%
-  mutate(Rank = 1:nrow(dqlab.exp), .before = 1) %>%
+dqlab.exp <-
+  dqlab.exp %>% mutate(Rank = rownames(dqlab.exp), .before = 1) %>%
   mutate(
     Percentage = dqlab.exp$Total / 3450,
-    Top_bottom =
-      c(
-        rep(paste("Top", 10), times = 10),
-        rep(NA, each = nrow(dqlab.exp) - 20),
-        rep(paste("Bottom", 10), times = 10)
-      ),
-    Has_missing = "",
-    Colors = rep(c("green", "grey", "red"), times = c(10, (nrow(
-      dqlab.exp
-    ) - 20), 10))
-  )
-dqlab.exp.plot$Has_missing <- complete.cases(dqlab.exp.plot)
-dqlab.exp.plot <-
-  browsable(tagList(
-    tags$label(
-      tags$input(type = "checkbox",
-                 onclick = "Reactable.setFilter('items-missing', 'Has_missing', event.target.checked)"),
-      "Top 10 & Bottom 10 Fashion Item"
+    Top_bottom = c(
+      rep(paste("Top", 10), times = 10),
+      rep(NA, each = nrow(dqlab.exp) - 20),
+      rep(paste("Bottom", 10), times = 10)
     ),
-    reactable(
-      dqlab.exp.plot,
-      theme = pff(centered = T),
-      columns = list(
-        Rank = colDef(name = "Rank",
-                      align = "center"),
-        Product_Name = colDef(name = "Product Name",
-                              align = "left"),
-        Total = colDef(
-          name = "Transaction Frequency",
-          align = "center",
-          cell = color_tiles(
-            data = dqlab.exp.plot,
-            colors = brewer.pal(5, "RdYlGn"),
-            box_shadow = T
-          )
-        ),
-        Top_bottom = colDef(
-          name = "Top 10 / Bottom 10",
-          align = "center",
-          cell = color_tiles(
-            data = dqlab.exp.plot,
-            color_ref = "Colors",
-            box_shadow = T
-          )
-        ),
-        Colors = colDef(show = F),
-        Percentage = colDef(
-          name = "Transaction Percentage",
-          align = "center",
-          cell = data_bars(
-            data = dqlab.exp.plot,
-            fill_color = brewer.pal(5, "RdYlGn"),
-            round_edges = T,
-            text_position = "outside-end",
-            background = "transperent",
-            box_shadow = T,
-            bar_height = 5,
-            number_fmt = scales::label_percent(decimal.mark = ",", accuracy = 0.01)
-          )
-        ),
-        Has_missing = colDef(
-          show = FALSE,
-          filterMethod = JS(
-            "function(rows, columnId, filterValue) {
+    Has_missing = complete.cases(Top_bottom),
+    Colors = rep(c("green", "grey", "red"),
+                 times = c(10, (nrow(
+                   dqlab.exp
+                 ) - 20), 10))
+  )
+browsable(tagList(
+  tags$label(
+    tags$input(type = "checkbox",
+               onclick = "Reactable.setFilter('items-missing', 'Has_missing', event.target.checked)"),
+    "Top 10 & Bottom 10 Fashion Item"
+  ),
+  reactable(
+    data = dqlab.exp,
+    theme = pff(centered = T),
+    columns = list(
+      Rank = colDef(name = "Rank",
+                    align = "center"),
+      Product_Name = colDef(name = "Product Name",
+                            align = "left"),
+      Total = colDef(
+        name = "Transaction Frequency",
+        align = "center",
+        cell = color_tiles(
+          data = dqlab.exp,
+          colors = brewer.pal(5, "RdYlGn"),
+          box_shadow = T
+        )
+      ),
+      Top_bottom = colDef(
+        name = "Top 10 / Bottom 10",
+        align = "center",
+        cell = color_tiles(
+          data = dqlab.exp,
+          color_ref = "Colors",
+          box_shadow = T
+        )
+      ),
+      Colors = colDef(show = F),
+      Percentage = colDef(
+        name = "Transaction Percentage",
+        align = "center",
+        cell = data_bars(
+          data = dqlab.exp,
+          fill_color = brewer.pal(5, "RdYlGn"),
+          round_edges = T,
+          text_position = "outside-end",
+          background = "transperent",
+          box_shadow = T,
+          bar_height = 5,
+          number_fmt = label_percent(decimal.mark = ",", accuracy = 0.01)
+        )
+      ),
+      Has_missing = colDef(
+        show = FALSE,
+        filterMethod = JS(
+          "function(rows, columnId, filterValue) {
           if (filterValue === true) {
             return rows.filter(function(row) {
               const hasMissing = row.values[columnId]
@@ -132,168 +108,74 @@ dqlab.exp.plot <-
           }
           return rows
         }"
-          )
         )
-      ),
-      elementId = "items-missing",
-      defaultPageSize = 20
-    )
-  ))
-dqlab.exp.plot
+      )
+    ),
+    elementId = "items-missing",
+    defaultPageSize = 20
+  )
+)) %>% saveWidget(file = "Total Unit Table.html")
 
 
 # 4. Product Bundle Combinations for Bottom 10 Fashion Item ---------------
-dqlab.exp.bottom.10.combi <-
-  apriori(dqlab.trans,
-          parameter = list(
-            supp = 9 / length(dqlab.trans),
-            confidence = 0.1,
-            minlen = 2,
-            maxlen = 3
-          ))
-dqlab.exp.bottom.10.combi <-
-  c(
-    head(sort(
-      subset(dqlab.exp.bottom.10.combi,
-             (rhs %in% "Celana Jeans Sobek Pria")),
-      by = "lift"
-    ), n = 1),
-    head(sort(
-      subset(dqlab.exp.bottom.10.combi,
-             (rhs %in% "Tas Kosmetik")),
-      by = "lift"
-    ),
-    n = 1),
-    head(sort(
-      subset(dqlab.exp.bottom.10.combi,
-             (rhs %in% "Stripe Pants")),
-      by = "lift"
-    ),
-    n = 1),
-    head(sort(
-      subset(dqlab.exp.bottom.10.combi,
-             (rhs %in% "Pelembab")),
-      by = "lift"
-    ),
-    n = 1),
-    head(sort(
-      subset(dqlab.exp.bottom.10.combi,
-             (rhs %in% "Tali Ban Ikat Pinggang")),
-      by = "lift"
-    ),
-    n = 1),
-    head(sort(
-      subset(
-        dqlab.exp.bottom.10.combi,
-        (rhs %in% "Baju Renang Pria Anak-anak")
-      ),
-      by = "lift"
-    ),
-    n = 1),
-    head(sort(
-      subset(dqlab.exp.bottom.10.combi,
-             (rhs %in% "Hair Dye")),
-      by = "lift"
-    ),
-    n = 1),
-    head(sort(
-      subset(dqlab.exp.bottom.10.combi,
-             (rhs %in% "Atasan Baju Belang")),
-      by = "lift"
-    ),
-    n = 1),
-    head(sort(
-      subset(
-        dqlab.exp.bottom.10.combi,
-        (rhs %in% "Tas Sekolah Anak Perempuan")
-      ),
-      by = "lift"
-    ),
-    n = 1),
-    head(sort(
-      subset(dqlab.exp.bottom.10.combi,
-             (rhs %in% "Dompet Unisex")),
-      by = "lift"
-    ),
-    n = 1)
-  )
-dqlab.exp.bottom.10.combi <-
-  DATAFRAME(dqlab.exp.bottom.10.combi)
-dqlab.exp.bottom.10.combi$LHS <- 
-  str_remove_all(dqlab.exp.bottom.10.combi$LHS, "[[:{}]]")
-dqlab.exp.bottom.10.combi$RHS <- 
-  str_remove_all(dqlab.exp.bottom.10.combi$RHS, "[[:{}]]")
-View(dqlab.exp.bottom.10.combi)
-write.csv(dqlab.exp.bottom.10.combi,
-          file = "Product Bundle Combinations for Bottom 10 Fashion Item.txt")
+dqlab.bundle.bottom.10 <-
+  dqlab.trans %>% apriori(parameter = list(
+    supp = 9 / length(dqlab.trans),
+    confidence = 0.1,
+    minlen = 2,
+    maxlen = 3
+  )) %>% DATAFRAME() %>% mutate(LHS = str_remove_all(LHS, "[{}]"),
+                                RHS = str_remove_all(RHS, "[{}]")) %>%
+  filter(RHS %in% (dqlab.exp$Product_Name %>% tail(n = 10))) %>%
+  arrange(desc(lift)) %>% distinct(RHS, .keep_all = T) %>%
+  mutate(
+    rule = paste("Rule", 1:6),
+    RHS = factor(RHS, levels = fct_inorder(RHS)),
+    LHS = factor(LHS, levels = fct_inorder(LHS))
+  ) %T>%
+  write.csv(file = "Product Bundle Combinations for Bottom 10 Fashion Item.txt") %>%
+  print()
+
 # * 4.1. Visualization ----------------------------------------------------
-dqlab.exp.bottom.10.combi <-
-  dqlab.exp.bottom.10.combi %>%
-  arrange(desc(lift))
-nrow(dqlab.exp.bottom.10.combi)
-dqlab.exp.bottom.10.combi$rule <-
-  paste("Rule", 1:6)
-dqlab.exp.bottom.10.combi.plot <-
-  ggplotly(
-    ggplot(
-      dqlab.exp.bottom.10.combi,
-      aes(
-        x = gsub(LHS,pattern = ",", replacement = ", <br>"),
-        y = str_wrap(RHS, 15),
-        fill = lift,
-        text = paste(
-          "<b>",
-          "LHS : ",
-          gsub(LHS,pattern = ",", replacement = ", "),
-          "<br>",
-          "RHS : ",
-          RHS,
-          "<br>",
-          "Lift : ",
-          round(lift, 2),
-          "</b>",
-          "<br>",
-          "Support : ",
-          round(support, 4) * 100,
-          "%",
-          "<br>",
-          "Confidence : ",
-          round(confidence, 4) * 100,
-          "%",
-          "<br>",
-          "Coverage : ",
-          round(coverage, 4) * 100,
-          "%",
-          "</br>"
-        )
-      )
-    ) +
-      geom_tile() +
-      geom_text(
-        aes(label = rule),
-        position = position_stack(vjust = 1),
-        vjust = 0.5
-      ) +
-      scale_fill_distiller(
-        type = "seq",
-        palette = "YlOrRd",
-        direction = 1
-      ) +
-      labs(
-        title = "Product Bundle Combinations\n Bottom 10 Fashion Item",
-        x = "LHS",
-        y = "RHS",
-        fill = paste("<b>", "Lift", "</b>")
-      ) +
-      theme(
-        axis.text.x = element_text(angle = 45),
-        plot.title = element_text(face = "bold"),
-        axis.title = element_text(face = "bold")
-      )
-    ,
-    tooltip = c("text")
-  )
-dqlab.exp.bottom.10.combi.plot
+ggplotly(
+  ggplot(dqlab.bundle.bottom.10, aes(
+    LHS,
+    RHS,
+    fill = lift,
+    text = paste0(
+      "<b>",
+      "LHS : ",
+      LHS,
+      "\n",
+      "RHS : ",
+      RHS,
+      "\n",
+      "Lift : ",
+      round(lift, 2),
+      "</b>\n",
+      "Confidence : ",
+      round(confidence, 4) * 100,
+      " %",
+      "\n",
+      "Support : ",
+      round(support, 4) * 100,
+      " %",
+      "\n"
+    )
+  )) + geom_tile() + geom_text(aes(label = str_replace_all(rule, " ", "<br>"))) + labs(
+    x = "<b>LHS<b>",
+    y = "<b>RHS<b>",
+    title = "<b>Product Bundle Combinations for Bottom 10 Fashion Items</b>",
+    fill = "<b>Lift</b>"
+  ) + scale_x_discrete(labels = str_replace_all(dqlab.bundle.bottom.10$LHS, ",", ",<br>")) +
+    scale_y_discrete(labels = str_wrap(dqlab.bundle.bottom.10$RHS, width = 15)) +
+    scale_fill_distiller(
+      type = "seq",
+      palette = "YlOrRd",
+      direction = 1
+    ) + theme(plot.title = element_text(hjust = 0.5)),
+  tooltip = c("text")
+) %>% saveWidget(file = "Product Bundle Combinations for Bottom 10 Fashion Item.html")
 
 
 # 5. Products Bundles Based on Requested Filters --------------------------
