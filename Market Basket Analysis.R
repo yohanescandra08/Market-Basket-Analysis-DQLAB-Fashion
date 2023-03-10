@@ -122,7 +122,7 @@ dqlab.bundle.bottom.10 <-
   dqlab.trans %>% apriori(parameter = list(
     supp = 9 / length(dqlab.trans),
     confidence = 0.1,
-    minlen = 2,
+    minlen = 1,
     maxlen = 3
   )) %>% DATAFRAME() %>% mutate(LHS = str_remove_all(LHS, "[{}]"),
                                 RHS = str_remove_all(RHS, "[{}]")) %>%
@@ -130,7 +130,7 @@ dqlab.bundle.bottom.10 <-
   arrange(desc(lift)) %>% distinct(RHS, .keep_all = T) %>%
   mutate(
     rule = paste("Rule", 1:6),
-    RHS = factor(RHS, levels = fct_inorder(RHS)),
+    RHS = factor(RHS, levels = rev(fct_inorder(RHS))),
     LHS = factor(LHS, levels = fct_inorder(LHS))
   ) %T>%
   write.csv(file = "Product Bundle Combinations for Bottom 10 Fashion Item.txt") %>%
@@ -163,12 +163,14 @@ ggplotly(
       "\n"
     )
   )) + geom_tile() + geom_text(aes(label = str_replace_all(rule, " ", "<br>"))) + labs(
-    x = "<b>LHS<b>",
-    y = "<b>RHS<b>",
+    x = "<b>LHS</b>",
+    y = "<b>RHS</b>",
     title = "<b>Product Bundle Combinations for Bottom 10 Fashion Items</b>",
     fill = "<b>Lift</b>"
   ) + scale_x_discrete(labels = str_replace_all(dqlab.bundle.bottom.10$LHS, ",", ",<br>")) +
-    scale_y_discrete(labels = str_wrap(dqlab.bundle.bottom.10$RHS, width = 15)) +
+    scale_y_discrete(labels = str_wrap(rev(
+      dqlab.bundle.bottom.10$RHS
+    ), width = 15)) +
     scale_fill_distiller(
       type = "seq",
       palette = "YlOrRd",
