@@ -1,0 +1,7 @@
+"","LHS","RHS","support","confidence","coverage","lift","count","rule"
+"1","Gembok Koper,Tas Waist Bag","Baju Renang Pria Anak-anak",0.00405797101449275,0.274509803921569,0.0147826086956522,29.5955882352941,14,"Rule 1"
+"2","Flat Shoes Ballerina,Gembok Koper","Baju Renang Pria Anak-anak",0.00405797101449275,0.186666666666667,0.0217391304347826,20.125,14,"Rule 2"
+"3","Celana Jeans Sobek Wanita,Jeans Jumbo","Baju Renang Pria Anak-anak",0.00550724637681159,0.121019108280255,0.0455072463768116,13.047372611465,19,"Rule 3"
+"4","Baju Renang Anak Perempuan,Tas Pinggang Wanita","Tas Makeup",0.0104347826086957,0.8,0.0130434782608696,19.5744680851064,36,"Rule 4"
+"5","Baju Renang Anak Perempuan,Tas Ransel Mini","Tas Makeup",0.011304347826087,0.795918367346939,0.0142028985507246,19.4745983499783,39,"Rule 5"
+"6","Baju Renang Anak Perempuan,Celana Pendek Green/Hijau","Tas Makeup",0.0101449275362319,0.777777777777778,0.0130434782608696,19.0307328605201,35,"Rule 6"
