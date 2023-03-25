@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<style>body{background-color:white;}</style>
+<style>body{background-color:D:\Github Repository\Market-Basket-Analysis-DQLAB-Fashion;}</style>
 <script src="lib/core-js-2.5.3/shim.min.js"></script>
 <script src="lib/react-17.0.0/react.min.js"></script>
 <script src="lib/react-17.0.0/react-dom.min.js"></script>
