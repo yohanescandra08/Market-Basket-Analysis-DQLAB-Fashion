@@ -113,7 +113,8 @@ browsable(tagList(
     ),
     elementId = "items-missing",
     defaultPageSize = 20
-  )
+  ) %>% add_title(title = "All DQLAB Fashion Items Alongside With Top 10 & Bottom 10",
+                  margin = margin(t = 10, b = 5))
 )) %>% saveWidget(file = "Total Unit Table.html")
 
 
