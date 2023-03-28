@@ -213,10 +213,8 @@ ggplotly(
     fill = lift,
     text = paste0(
       "<b>",
-      "LHS : ",
-      LHS,
-      "\n",
-      "RHS : ",
+      str_replace_all(LHS, ",", " & "),
+      " => ",
       RHS,
       "\n",
       "Lift : ",
@@ -236,7 +234,7 @@ ggplotly(
     y = "<b>RHS</b>",
     title = "<b>Top 10 Product Bundle Combinations Based on Filter</b>",
     fill = "<b>Lift</b>"
-  ) + scale_x_discrete(labels = str_replace_all(dqlab.bundle.req$LHS, ",", ",<br>")) +
+  ) + scale_x_discrete(labels = str_replace_all(dqlab.bundle.req$LHS, ",", "<br>&<br>")) +
     scale_y_discrete(labels = str_wrap(rev(
       unique(dqlab.bundle.req$RHS)
     ), width = 15)) +
