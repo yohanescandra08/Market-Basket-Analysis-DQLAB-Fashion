@@ -10,6 +10,12 @@ library(htmltools)
 library(htmlwidgets)
 
 
+# 2. Directory Path -------------------------------------------------------
+getwd()
+load()
+save.image()
+
+
 # 2. Main Data Frame ------------------------------------------------------
 dqlab.trans <-
   read.transactions(
