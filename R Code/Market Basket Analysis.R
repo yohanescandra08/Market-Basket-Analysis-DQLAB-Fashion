@@ -151,10 +151,8 @@ ggplotly(
     fill = lift,
     text = paste0(
       "<b>",
-      "LHS : ",
-      LHS,
-      "\n",
-      "RHS : ",
+      str_replace_all(LHS, ",", " & "),
+      " => ",
       RHS,
       "\n",
       "Lift : ",
@@ -174,17 +172,17 @@ ggplotly(
     y = "<b>RHS</b>",
     title = "<b>Product Bundle Combinations for Bottom 10 Fashion Items</b>",
     fill = "<b>Lift</b>"
-  ) + scale_x_discrete(labels = str_replace_all(dqlab.bundle.bottom.10$LHS, ",", ",<br>")) +
-    scale_y_discrete(labels = str_wrap(rev(
-      dqlab.bundle.bottom.10$RHS
-    ), width = 15)) +
+  ) + scale_x_discrete(labels = str_replace_all(
+    dqlab.bundle.bottom.10$LHS, ",", "<br>&<br>"
+  )) +
+    scale_y_discrete(labels = str_wrap(dqlab.bundle.bottom.10$RHS, width = 15)) +
     scale_fill_distiller(
       type = "seq",
       palette = "YlOrRd",
       direction = 1
     ) + theme(plot.title = element_text(hjust = 0.5)),
   tooltip = c("text")
-) %>% saveWidget(file = "Product Bundle Combinations for Bottom 10 Fashion Item.html")
+)
 
 
 # 5. Products Bundles Based on Requested Filters --------------------------
