@@ -110,7 +110,7 @@ browsable(tagList(
     defaultPageSize = 20
   ) %>% add_title(title = "DQLAB Fashion Items",
                   margin = margin(t = 10, b = 5))
-))
+)) %>% save_html(file = "List of Item Transactions.html")
 
 
 # 4. Product Bundle Combinations for Bottom 10 Fashion Item ---------------
@@ -171,7 +171,7 @@ ggplotly(
       direction = 1
     ) + theme(plot.title = element_text(hjust = 0.5)),
   tooltip = c("text")
-)
+) %>% save_html(file = "Product Bundle Combinations for Bottom 10 Fashion Items.html")
 
 
 # 5. Products Bundles Based on Requested Filters --------------------------
@@ -236,7 +236,7 @@ ggplotly(
       axis.text.x = element_text(angle = 45)
     ),
   tooltip = c("text")
-) %>% saveWidget(file = "Top 10 Product Bundle Combinations Based on Filter.html")
+) %>% save_html(file = "Top 10 Product Bundle Combinations Based on Filter.html")
 
 
 # 6. Product Bundles Based on Slow Moving Item ----------------------------
@@ -302,4 +302,4 @@ ggplotly(
       axis.text.x = element_text(angle = 45)
     ),
   tooltip = c("text")
-) %>% saveWidget(file = "Product Bundle Combinations on Slow-Moving Items.html")
+) %>% save_html(file = "Product Bundle Combinations on Slow-Moving Items.html")
