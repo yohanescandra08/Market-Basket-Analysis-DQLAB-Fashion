@@ -167,11 +167,11 @@ ggplotly(
     scale_y_discrete(labels = str_wrap(dqlab.bundle.bottom.10$RHS, width = 15)) +
     scale_fill_distiller(
       type = "seq",
-      palette = "YlOrRd",
+      palette = "YlGn",
       direction = 1
     ) + theme(plot.title = element_text(hjust = 0.5)),
   tooltip = c("text")
-) %>% save_html(file = "Product Bundle Combinations for Bottom 10 Fashion Items.html")
+) %>% saveWidget(file = "Product Bundle Combinations for Bottom 10 Fashion Items.html")
 
 
 # 5. Products Bundles Based on Requested Filters --------------------------
@@ -184,13 +184,9 @@ dqlab.bundle.req <-
   )) %>% DATAFRAME() %>% mutate(LHS = str_remove_all(LHS, "[{}]"),
                                 RHS = str_remove_all(RHS, "[{}]")) %>%
   arrange(desc(lift)) %>% head(n = 10) %>%
-  mutate(
-    rule = paste("Rule", 1:10),
-    RHS = factor(RHS, levels = rev(fct_inorder(unique(
-      RHS
-    )))),
-    LHS = factor(LHS, levels = fct_inorder(LHS))
-  ) %T>%
+  mutate(rule = paste("Rule", 1:10),
+         RHS = factor(RHS, levels = fct_inorder(unique(RHS)))) %>% arrange(RHS) %>%
+  mutate(LHS = factor(LHS, levels = LHS)) %T>%
   write.csv(file = "Top 10 Product Bundle Combinations Based on Filter.txt") %>%
   print()
 
@@ -224,19 +220,20 @@ ggplotly(
     title = "<b>Top 10 Product Bundle Combinations Based on Filter</b>",
     fill = "<b>Lift</b>"
   ) + scale_x_discrete(labels = str_replace_all(dqlab.bundle.req$LHS, ",", "<br>&<br>")) +
-    scale_y_discrete(labels = str_wrap(rev(
-      unique(dqlab.bundle.req$RHS)
-    ), width = 15)) +
+    scale_y_discrete(labels = str_wrap(unique(
+      dqlab.bundle.req$RHS
+    )
+    , width = 15)) +
     scale_fill_distiller(
       type = "seq",
-      palette = "YlOrRd",
+      palette = "YlGn",
       direction = 1
     ) + theme(
       plot.title = element_text(hjust = 0.5),
       axis.text.x = element_text(angle = 45)
     ),
   tooltip = c("text")
-) %>% save_html(file = "Top 10 Product Bundle Combinations Based on Filter.html")
+) %>% saveWidget(file = "Top 10 Product Bundle Combinations Based on Filter.html")
 
 
 # 6. Product Bundles Based on Slow Moving Item ----------------------------
@@ -302,4 +299,4 @@ ggplotly(
       axis.text.x = element_text(angle = 45)
     ),
   tooltip = c("text")
-) %>% save_html(file = "Product Bundle Combinations on Slow-Moving Items.html")
+) %>% saveWidget(file = "Product Bundle Combinations on Slow-Moving Items.html")
