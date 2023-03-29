@@ -32,7 +32,7 @@ dqlab.exp <-
   itemFrequency(dqlab.trans, "absolute") %>% data.frame() %>%
   arrange(desc(.)) %>% rename(!!"Total" := ".") %>%
   rownames_to_column("Product_Name") %>% print() %>%
-  write.csv(file = "Total Unit Sell.txt")
+  write.csv(file = "List of Item Transactions.txt")
 
 # * 3.1. Top 10 Product Sell ----------------------------------------------
 dqlab.exp %>% head(10) %>% print() %>% write.csv(file = "Top 10 Product Sell.txt")
@@ -41,7 +41,7 @@ dqlab.exp %>% tail(10) %>% arrange(desc(Total)) %>% print() %>% write.csv(file =
 
 # * 3.3. Visualization ----------------------------------------------------
 dqlab.exp <-
-  dqlab.exp %>% mutate(Rank = rownames(dqlab.exp), .before = 1) %>%
+  dqlab.exp %>% mutate(Rank = as.integer(rownames(dqlab.exp)), .before = 1) %>%
   mutate(
     Percentage = dqlab.exp$Total / 3450,
     Top_bottom = c(
@@ -49,11 +49,7 @@ dqlab.exp <-
       rep(NA, each = nrow(dqlab.exp) - 20),
       rep(paste("Bottom", 10), times = 10)
     ),
-    Has_missing = complete.cases(Top_bottom),
-    Colors = rep(c("green", "grey", "red"),
-                 times = c(10, (nrow(
-                   dqlab.exp
-                 ) - 20), 10))
+    Has_missing = complete.cases(Top_bottom)
   )
 browsable(tagList(
   tags$label(
@@ -72,22 +68,16 @@ browsable(tagList(
       Total = colDef(
         name = "Transaction Frequency",
         align = "center",
-        cell = color_tiles(
+        cell = data_bars(
           data = dqlab.exp,
-          colors = brewer.pal(5, "RdYlGn"),
-          box_shadow = T
+          fill_color = brewer.pal(5, "RdYlGn"),
+          round_edges = T,
+          text_position = "outside-end",
+          box_shadow = T,
+          max_value = 3450
         )
       ),
-      Top_bottom = colDef(
-        name = "Top 10 / Bottom 10",
-        align = "center",
-        cell = color_tiles(
-          data = dqlab.exp,
-          color_ref = "Colors",
-          box_shadow = T
-        )
-      ),
-      Colors = colDef(show = F),
+      Top_bottom = colDef(show = F),
       Percentage = colDef(
         name = "Transaction Percentage",
         align = "center",
@@ -96,9 +86,8 @@ browsable(tagList(
           fill_color = brewer.pal(5, "RdYlGn"),
           round_edges = T,
           text_position = "outside-end",
-          background = "transperent",
           box_shadow = T,
-          bar_height = 5,
+          max_value = 1,
           number_fmt = label_percent(decimal.mark = ",", accuracy = 0.01)
         )
       ),
