@@ -1,0 +1,70 @@
+"","Product_Name","Total"
+"1","Shampo Biasa",2075
+"2","Serum Vitamin",1685
+"3","Baju Batik Wanita",1312
+"4","Baju Kemeja Putih",1255
+"5","Celana Jogger Casual",1136
+"6","Cover Koper",1086
+"7","Sepatu Sandal Anak",1062
+"8","Tali Pinggang Gesper Pria",1003
+"9","Sepatu Sport merk Z",888
+"10","Wedges Hitam",849
+"11","Celana Jeans Sobek Wanita",834
+"12","Hair Dryer",821
+"13","Celana Pendek Jeans",811
+"14","Dompet Flip Cover",785
+"15","Dompet Card Holder",772
+"16","Tas Travel",762
+"17","Hair and Scalp",698
+"18","Flat Shoes Ballerina",645
+"19","Celana Pendek Casual",639
+"20","Blouse Denim",629
+"21","Celana Tactical ",604
+"22","Sweater Top Panjang",602
+"23","Tank Top",592
+"24","Tas Ransel Mini",560
+"25","Tas Waist Bag",556
+"26","Shampo Anti Dandruff",530
+"27","Tali Pinggang Anak",520
+"28","Tas Pinggang Wanita",508
+"29","Sepatu Sport merk Y",506
+"30","Baju Renang Wanita Dewasa",493
+"31","Celana Pendek Green/Hijau",439
+"32","Tas Sekolah Anak Laki-laki",437
+"33","Jeans Jumbo",433
+"34","Kaos",433
+"35","Baju Kaos Anak - Karakter Kartun",418
+"36","Atasan Kaos Putih",410
+"37","Baju Kaos Anak - Superheroes",400
+"38","Gembok Koper",386
+"39","Minyak Rambut",378
+"40","Dompet Kulit Pria",376
+"41","Dompet STNK Gantungan",340
+"42","Baju Renang Pria Dewasa",313
+"43","Koper Fiber",310
+"44","Baju Kaos Olahraga",308
+"45","Tas Multifungsi",280
+"46","Sepatu Kulit Casual",260
+"47","Sepatu Sekolah Hitam W",246
+"48","Obat Penumbuh Rambut",235
+"49","Sunblock Cream",229
+"50","Cream Whitening",226
+"51","Hair Tonic",226
+"52","Celana Panjang Format Hitam",167
+"53","Tas Makeup",141
+"54","Tas Tangan",128
+"55","Baju Renang Anak Perempuan",124
+"56","Kuas Makeup ",118
+"57","Woman Ripped Jeans ",118
+"58","Tas Kulit Selempang",109
+"59","Mascara",92
+"60","Dompet Unisex",75
+"61","Tas Sekolah Anak Perempuan",71
+"62","Atasan Baju Belang",56
+"63","Hair Dye",46
+"64","Baju Renang Pria Anak-anak",32
+"65","Tali Ban Ikat Pinggang",27
+"66","Pelembab",24
+"67","Stripe Pants",19
+"68","Tas Kosmetik",11
+"69","Celana Jeans Sobek Pria",9
